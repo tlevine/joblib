@@ -33,12 +33,16 @@ def test_disk_used():
         a = array.array('i')
         sizeof_i = a.itemsize
         target_size = 1024
+
+        # We set a buffer because sometimes the
+        buffer_ = 48 # This is enough on an OpenBSD Fast File System.
+
         n = int(target_size * 1024 / sizeof_i)
         a = array.array('i', n * (1,))
         with open(os.path.join(cachedir, 'test'), 'wb') as output:
             a.tofile(output)
         nose.tools.assert_true(disk_used(cachedir) >= target_size)
-        nose.tools.assert_true(disk_used(cachedir) < target_size + 12)
+        nose.tools.assert_true(disk_used(cachedir) < target_size + buffer_)
     finally:
         shutil.rmtree(cachedir)
 
